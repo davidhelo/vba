@@ -1,0 +1,89 @@
+Public Function FindSumCombinations(rngNumbers As Range, lTargetSum As Long)
+ Dim arNumbers() As Long, part() As Long
+ Dim arRes() As String
+ Dim indI As Long
+ Dim cellCurr As Range
+ 
+ ReDim arRes(0)
+ If rngNumbers.Count > 1 Then
+  ReDim arNumbers(rngNumbers.Count - 1)
+  
+  indI = 0
+  For Each cellCurr In rngNumbers
+   arNumbers(indI) = CLng(cellCurr.Value)
+   indI = indI + 1
+  Next cellCurr
+  Call SumUpRecursiveCombinations(arNumbers, lTargetSum, part(), arRes())
+ End If
+ ReDim Preserve arRes(0 To UBound(arRes) - 1)
+ FindSumCombinations = arRes
+End Function
+ 
+
+Private Sub SumUpRecursiveCombinations(Numbers() As Long, target As Long, part() As Long, ByRef arRes() As String)
+ Dim s As Long, i As Long, j As Long, num As Long, indRes As Long
+ Dim remaining() As Long, partRec() As Long
+ s = SumArray(part)
+ 
+ If s = target Then
+  indRes = UBound(arRes)
+  ReDim Preserve arRes(0 To indRes + 1)
+  arRes(indRes) = ArrayToString(part)
+ End If
+ If s > target Then Exit Sub
+
+ If (Not Not Numbers) <> 0 Then
+  For i = 0 To UBound(Numbers)
+   Erase remaining()
+   num = Numbers(i)
+   For j = i + 1 To UBound(Numbers)
+    AddToArray remaining, Numbers(j)
+   Next j
+   Erase partRec()
+   CopyArray partRec, part
+   AddToArray partRec, num
+   SumUpRecursiveCombinations remaining, target, partRec, arRes
+  Next i
+ End If
+End Sub
+
+
+Private Function ArrayToString(x() As Long) As String
+ Dim n As Long, result As String
+ result = x(n)
+ For n = LBound(x) + 1 To UBound(x)
+  result = result & "," & x(n)
+ Next n
+ ArrayToString = result
+End Function
+
+
+Private Function SumArray(x() As Long) As Long
+ Dim n As Long
+ SumArray = 0
+ If (Not Not x) <> 0 Then
+  For n = LBound(x) To UBound(x)
+   SumArray = SumArray + x(n)
+  Next n
+ End If
+End Function
+
+
+Private Sub AddToArray(arr() As Long, x As Long)
+ If (Not Not arr) <> 0 Then
+  ReDim Preserve arr(0 To UBound(arr) + 1)
+ Else
+  ReDim Preserve arr(0 To 0)
+ End If
+ arr(UBound(arr)) = x
+End Sub
+
+
+Private Sub CopyArray(destination() As Long, source() As Long)
+ Dim n As Long
+ If (Not Not source) <> 0 Then
+  For n = 0 To UBound(source)
+   AddToArray destination, source(n)
+  Next n
+ End If
+End Sub
