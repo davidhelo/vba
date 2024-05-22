@@ -1,0 +1,36 @@
+Sub openFile()
+    Dim Book1 As Workbook
+    Set Book1 = Workbooks.Open("C:\Users\DAVOM\Desktop\excel VBA test\Book1.xlsx", ReadOnly:=True)
+    
+    Dim strArray As Variant
+    Dim TotalRows As Long
+
+    TotalRows = Rows(Rows.Count).End(xlUp).Row
+    strArray = Range(Cells(1, 1), Cells(TotalRows, 2)).Value
+    Book1.Close
+    
+    Debug.Print strArray(1, 2)
+    Range(Cells(1, 1), Cells(TotalRows, 2)).Value = strArray
+    MsgBox "Loaded " & UBound(strArray) & " items!"
+End Sub
+
+Sub ChangeSheetName()
+    Dim SheetsArr() As Variant
+    SheetsArr = Array("New Name_", "Other Name_", "Third Name_") 'sheet starting with this name will be updated
+    
+    'Last business day in format "mmddyy"
+    Dim lastBD As Date
+    Dim dateStr As String
+    lastBD = WorksheetFunction.WorkDay(Date, -1)
+    dateStr = Format(lastBD, "mmddyy")
+    
+    For Each ws In Worksheets
+        For Each sheetName In SheetsArr
+            If ws.Name Like sheetName & "*" Then
+                ws.Name = "updated Name_" & dateStr & "-" & ws.Index
+            End If
+        Next
+    Next
+    
+    'ActiveSheet.Name = "New Name_" & dateStr
+End Sub
